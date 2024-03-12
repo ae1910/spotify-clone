@@ -1,0 +1,30 @@
+@font-face {
+    font-family: 'Figtree';
+    src: url(fonts/Figtree-VariableFont_wght.ttf);
+}
+@font-face {
+    font-family: 'Montserrat';
+    src: url(fonts/Montserrat-VariableFont_wght.ttf);
+}
+
+:root {
+    --background-main: #000;
+    --background-tinted-main: rgba(255, 255, 255, 0.1);
+    --background-tinted-highlight: rgba(255, 255, 255, 0.15);
+    --main-font: Figtree, Montserrat, sans-serif;
+    --text-main: #fff;
+    --text-secondary: #a7a7a7;
+    --text-tertiary: #b3b3b3;
+    --text-accent: #1ed760;
+    --text-size-larger-2: 2em;
+    --text-size-larger: 1.5em;
+    --text-size-main: 1em;
+    --text-size-smaller: 0.8125em;
+    --spacing-thinner-2: 2px;
+    --spacing-thinner: 4px;
+    --spacing-main: 8px;
+    --spacing-wider: 12px;
+    --spacing-wider-2: 16px;
+    --spacing-wider-3: 20px;
+    --spacing-wider-4: 24px;
+}

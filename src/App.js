@@ -1,23 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
+import './css/App.css';
+import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
+import { useState, useEffect } from 'react';
+import { token } from './hooks/index'
+import Account from './pages/account';
+import Login from './pages/login';
 
 function App() {
+  const [accessToken, setAccessToken] = useState('')
+  
+  useEffect(() => {
+    window.localStorage.removeItem('accessToken');
+    window.localStorage.removeItem('refreshToken');
+    setAccessToken(token)
+  }, []);
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div id='app-container'>
+      {accessToken ?
+          <Account />
+          : <Login />
+        }
     </div>
   );
 }
