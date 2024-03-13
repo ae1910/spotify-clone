@@ -7,6 +7,7 @@ import { StyledTrackItem } from "../components/styles/track.style";
 import { BsExplicitFill } from "react-icons/bs";
 import { FaRegHeart } from "react-icons/fa";
 import { PiDotsThreeBold } from "react-icons/pi";
+import { IoIosPlay } from "react-icons/io";
 
 
 function Search() {
@@ -47,7 +48,6 @@ function Search() {
         try{
             const responses = await getSearchResults(query);
             const json = await Promise.all(responses.map(response => response.json()));
-            console.log(json);
             setTracksResults(json[0].tracks);
             setArtistsResults(json[1].artists);
             setAlbumResults(json[2].albums)
@@ -86,6 +86,9 @@ function Search() {
                                     <div className="col-2">
                                         <div className="track-image">
                                             <img src={item?.album?.images[1]?.url}/>
+                                            <button>
+                                                <IoIosPlay />
+                                            </button>
                                         </div>
                                         <div className="track-info">
                                             <Link to={item?.external_urls.spotify} className="track-title">{item?.name}</Link>

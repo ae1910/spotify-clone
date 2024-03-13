@@ -4,20 +4,28 @@ import { PiDotsThreeBold } from "react-icons/pi";
 import { LuClock3 } from "react-icons/lu";
 import Track from "../components/track";
 import { Link, useLocation } from "react-router-dom";
-import { getPlaylist } from "../hooks";
+import { getPlaylist, getAlbum, getSavedTracks } from "../hooks";
 import { useEffect, useState } from "react";
+import likedSongsImg from '../img/liked-songs-300.png';
 
 function Playlist() {
     const location = useLocation();
-    const { id } = location.state;
+    const { id, type } = location.state;
 
     const [playlist, setPlaylist] = useState({});
 
     const fetchData = async () => {
+        let getFunction;
         try{
-            const response = await getPlaylist(id, 100);
+            if(type == 'playlist') {
+                getFunction = getPlaylist(id, 100);
+            } else if(type == 'album') {
+                getFunction = getAlbum(id);
+            } else {
+                getFunction = getSavedTracks();
+            }
+            const response = await getFunction;
             const json = await response.json();
-            console.log(json);
             setPlaylist(json);
         }
         catch (error) {
@@ -27,26 +35,29 @@ function Playlist() {
 
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [id]);
 
     return (
         <div className="playlist-view-container">
             <div className="playlist-info-container">
                 <div className="playlist-image">
-                    <img src={playlist?.images[0]?.url}/>
+                    <img src={type == 'liked songs' ? likedSongsImg : playlist?.images ? playlist?.images[0]?.url : ''}/>
                 </div>
                 <div className="playlist-info">
-                    <p>{playlist?.type?.substring(0, 1).toUpperCase() + playlist?.type?.substring(1)}</p>
-                    <h1>{playlist?.name}</h1>
-                    <span className="playlist-description">{playlist?.description}</span>
+                    <p>{type == 'liked songs'? 'Playlist' : playlist?.type?.substring(0, 1).toUpperCase() + playlist?.type?.substring(1)}</p>
+                    <h1>{type == 'liked songs'? 'Liked Songs' : playlist?.name}</h1>
+                    {type !== 'playlist' ? <></> : <span className="playlist-description">{playlist?.description}</span>}
                     <div className="metadata">
-                        <div className="user">
-                            <div className="user-image">
-                                <img src=""/>
-                            </div>
-                            <Link to={playlist?.external_urls?.spotify} target="_blank" rel="noopener noreferrer">{playlist?.owner?.display_name}</Link>
-                        </div>
-                        <p>{playlist?.tracks?.total} songs</p>
+                    <div className="user">
+                        {type == 'album' ? 
+                        // <></>
+                            <Link to={playlist.artists ? playlist?.artists[0]?.external_urls?.spotify : ''} target="_blank" rel="noopener noreferrer">{playlist.artists ? playlist?.artists[0]?.name : ''}</Link>
+                            : type == 'liked songs' ? <Link to={playlist?.external_urls?.spotify} target="_blank" rel="noopener noreferrer">{playlist?.owner?.display_name}</Link>
+                            : <Link to={playlist?.external_urls?.spotify} target="_blank" rel="noopener noreferrer">{playlist?.owner?.display_name}</Link>
+                        }
+                    </div>
+                    {type == 'album' ? <p>{new Date(playlist?.release_date).getFullYear()}</p> : <></>}
+                    {type == 'album' ? <p>{playlist?.total_tracks?.toLocaleString()} songs</p> : type == 'liked songs' ? <p>{playlist?.total?.toLocaleString()} songs</p> : <p>{playlist?.tracks?.total?.toLocaleString()} songs</p>}
                     </div>
                 </div>
             </div>
@@ -66,22 +77,43 @@ function Playlist() {
                     <div className="playlist-header layout-grid">
                         <div className='col col-1' role="column-header">#</div> 
                         <div className='col col-2' role="column-header">Title</div> 
-                        <div className='col col-3' role="column-header">Album</div> 
-                        <div className='col col-4' role="column-header">Date Added</div>
+                        {type == 'album' ? <></> : <div className='col col-3' role="column-header">Album</div>} 
+                        {type == 'album' ? <></> : <div className='col col-4' role="column-header">Date Added</div>}
                         <div className='col col-5' role="column-header">
                             <LuClock3 />
                         </div>
                     </div>
-                    <div className="playlist-items">
-                        {playlist?.tracks?.items?.map((item, i) =>
-                            <Track 
-                            key={i}
-                            id={i + 1}
-                            item={item}/>
-                        )}
-                    </div>
+                    {type == 'liked songs' ?
+                        <div className="playlist-items">
+                            {playlist?.items?.map((item, i) =>
+                                <Track 
+                                key={i}
+                                id={i + 1}
+                                type={type}
+                                item={item}/>
+                            )}
+                        </div>
+                        : <div className="playlist-items">
+                            {playlist?.tracks?.items?.map((item, i) =>
+                                <Track 
+                                key={i}
+                                id={i + 1}
+                                type={type}
+                                item={item}/>
+                            )}
+                        </div>
+                    }
                 </div>
             </div>
+            {type == 'album' ?
+                <div className='metadata-copyright'>
+                    <p>{`${new Date(playlist?.release_date).toLocaleString('default', { month: 'long' })} ${new Date(playlist?.release_date).getDate()}, ${new Date(playlist?.release_date).getFullYear()}`}</p>
+                    {playlist?.copyrights?.map((copyright, i) =>
+                        <p>{copyright.text}</p>
+                    )}
+                </div> 
+                : <></>
+            }
         </div>
     )
 }

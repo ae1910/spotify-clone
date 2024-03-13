@@ -16,7 +16,7 @@ const Login = () => {
             <div className="login-container">
                 <div className='logo-container'>
                     <img src={logoGreen} />
-                    <h2>Twin</h2>
+                    <h2>Limited</h2>
                 </div>
                 <a className='login-btn' href={LOGIN_URI}>Connect to Spotify</a>
             </div>

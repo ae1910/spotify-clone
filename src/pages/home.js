@@ -1,9 +1,7 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { getHomepage, getRecommendations, logout } from '../hooks/index';
-import Header from '../components/header';
+import { getHomepage, getRecommendations } from '../hooks/index';
 import Card from '../components/cards';
-import Footer from '../components/footer'
 
 
 const Home = () => {
@@ -30,7 +28,7 @@ const Home = () => {
 
     const fetchData = async () => {
         try{
-            const responses = await getHomepage('37i9dQZEVXbMDoHDwVN2tF', 20);
+            const responses = await getHomepage();
             const json = await Promise.all(responses.map(response => response.json()));
             setNewReleases(json[0]);
             setRecentlyPlayed(json[1]);
@@ -72,8 +70,10 @@ const Home = () => {
                     {newReleases.albums?.items.map((item, i) =>
                         <Card
                         key={i}
+                        type='album'
                         item={item}
-                        image={item.images[0]}/>
+                        image={item.images[0]}
+                        url={`/album/${item.id}`}/>
                     )}
                 </div>
             </div>
@@ -86,8 +86,10 @@ const Home = () => {
                     {recentlyPlayed.items?.map((item, i) =>
                         <Card
                         key={i}
+                        type={'track'}
                         item={item.track}
-                        image={item.track.album.images[1]}/>
+                        image={item.track.album.images[1]}
+                        url={item.track.external_urls.spotify}/>
                     )}
                 </div>
             </div>
@@ -100,8 +102,10 @@ const Home = () => {
                     {recommended.tracks?.map((item, i) =>
                         <Card
                         key={i}
+                        type={'track'}
                         item={item}
-                        image={item.album.images[1]}/>
+                        image={item.album.images[1]}
+                        url={item.album.external_urls.spotify}/>
                     )}
                 </div>
             </div>
@@ -114,8 +118,10 @@ const Home = () => {
                     {popularTracks?.tracks?.items.map((item, i) =>
                         <Card
                         key={i}
+                        type={'track'}
                         item={item.track}
-                        image={item.track.album.images[1]}/>
+                        image={item.track.album.images[1]}
+                        url={item.track.album.external_urls.spotify}/>
                     )}
                 </div>
             </div>

@@ -14,6 +14,14 @@ export const StyledTrackItem = styled.div`
         .col-5 button {
             visibility: visible;
         }
+        .col-1 {
+            span {
+                visibility: hidden;
+            }
+            button {
+                visibility: visible;
+            }
+        }
     }    
     a {
         color: var(--text-secondary);
@@ -30,6 +38,29 @@ export const StyledTrackItem = styled.div`
             word-break: break-all;
             overflow: hidden;
             text-overflow: ellipsis;
+        }
+    }
+    .col-1 {
+        position: relative;
+
+        span {
+            visibility: visible;
+        }
+        button {
+            visibility: hidden;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            background-color: transparent;
+            padding: 1px 3px;
+            border: 0;
+            color: var(--text-main);
+            font-size: 1.4em;
+            cursor: pointer;
         }
     }
     .col-2 {

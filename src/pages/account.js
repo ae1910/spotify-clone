@@ -2,9 +2,10 @@ import {BrowserRouter as Router, Routes, Route, useLocation} from "react-router-
 import Sidebar from '../components/sidebar';
 import Player from '../components/player';
 import Home from './home';
-import Section from './section';
-import Playlist from "./playlist";
 import Header from "../components/header";
+import Section from './section';
+import Search from "./search";
+import Playlist from "./playlist";
 import Footer from "../components/footer";
 
 const Account = () => {
@@ -18,10 +19,9 @@ const Account = () => {
                         <Routes>               
                             <Route path='/' element={<Home />}/>
                             <Route path='/section/:sectionId' element={<Section />}/>
-                            <Route path='/search' />
-                            <Route path='/track/:trackId' />
-                            <Route path='/album/:albumId' />
-                            <Route path='/collections/:collectionsId' />
+                            <Route path='/search' element={<Search />}/>
+                            <Route path='/album/:albumId' element={<Playlist />} />
+                            <Route path='/collection/tracks' element={<Playlist />}/>
                             <Route path='/playlist/:playlistId' element={<Playlist />}/>
                             <Route path='/queue' />
                         </Routes>

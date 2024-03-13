@@ -17,6 +17,7 @@ const refreshAccessToken = async () => {
         const response = await fetch(`http://localhost:8080/refresh_token?refresh_token=${getLocalRefreshToken()}`);
         const { access_token } = response;
         setLocalAccessToken(access_token);
+        console.log(access_token);
         window.location.reload();
         return;
     } catch (error) {
@@ -42,7 +43,7 @@ export const getAccessToken = () => {
         refreshAccessToken();
     }
   
-    // If token has expired
+    // If token expired
     if (Date.now() - getTokenTimestamp() > EXPIRATION_TIME) {
         console.warn('Access token has expired, refreshing...');
         setLocalRefreshToken(refresh_token);
@@ -113,14 +114,66 @@ export const getRecommendations = (topTracksIds) => fetch(`https://api.spotify.c
     headers
 });
 
-// Get a List of Popular Tracks
+// Get a Playlist
 // --> https://developer.spotify.com/documentation/web-api/reference/get-playlist
 export const getPlaylist = (id, limit) => fetch(`https://api.spotify.com/v1/playlists/${id}?limit=${limit}`, { 
     methods:'GET', 
     headers
 });
 
-export const getHomepage = (limit) => 
-    Promise.all([getNewReleases(), getRecentlyPlayed(), getPlaylist(limit)]);
+// Get Categories
+// --> https://developer.spotify.com/documentation/web-api/reference/get-playlist
+export const getCategories = () => fetch(`https://api.spotify.com/v1/browse/categories/?limit=50`, { 
+    methods:'GET', 
+    headers
+});
+
+// Get a Album
+// --> https://developer.spotify.com/documentation/web-api/reference/get-an-album
+export const getAlbum = (id) => fetch(`https://api.spotify.com/v1/albums/${id}`, { 
+    methods:'GET', 
+    headers
+});
+
+// Get a List of Saved Tracks
+// --> https://developer.spotify.com/documentation/web-api/reference/get-users-saved-tracks
+export const getSavedTracks = () => fetch(`https://api.spotify.com/v1/me/tracks?limit=50`, { 
+    methods:'GET', 
+    headers
+});
+
+// Get Search Results
+// --> https://developer.spotify.com/documentation/web-api/reference/search
+export const getSearchResult = (query, type, limit) => fetch(`https://api.spotify.com/v1/search?q=${query}&type=${type}&limit=${limit}`, { 
+    methods:'GET', 
+    headers
+});
+
+// Get Currently Playing Track
+// --> https://developer.spotify.com/documentation/web-api/reference/get-users-saved-tracks
+export const getCurrentTack = () => fetch(`https://api.spotify.com/v1/me/player/currently-playing`, { 
+    methods:'GET', 
+    headers
+});
+
+// Skip To Next Song
+// --> https://developer.spotify.com/documentation/web-api/reference/get-users-saved-tracks
+export const skipToNext = () => fetch(`https://api.spotify.com/v1/me/player/currently-playing`, { 
+    methods:'POST', 
+    headers
+});
+
+// Skip To Previous Song
+// --> https://developer.spotify.com/documentation/web-api/reference/skip-users-playback-to-previous-track
+export const skipToPrevious = () => fetch(`https://api.spotify.com/v1/me/player/previous`, { 
+    methods:'POST', 
+    headers
+});
+
+export const getHomepage = () => 
+    Promise.all([getNewReleases(), getRecentlyPlayed(), getPlaylist('37i9dQZEVXbMDoHDwVN2tF', 20)]);
+;
+export const getSearchResults = (query) => 
+    Promise.all([getSearchResult(query, 'track', 5), getSearchResult(query, 'artist', 10), getSearchResult(query, 'album', 10), getSearchResult(query, 'playlist', 10)]);
 ;
 

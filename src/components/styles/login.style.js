@@ -21,9 +21,9 @@ export const StyledLogin = styled.div`
         width: 250px;
     }
     h2 {
-        font-size: 2em;
+        font-size: 1.5em;
         text-align: end;
-        margin: -23px 43px 0 0;
+        margin: -22px 40px 0 0;
         padding: 0;
     }
     .login-btn {

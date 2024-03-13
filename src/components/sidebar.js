@@ -8,6 +8,7 @@ import { IoLibraryOutline, IoLibrarySharp } from "react-icons/io5";
 import { HiSpeakerWave } from "react-icons/hi2";
 import { useState, useEffect, useRef } from 'react';
 import { getLibrary } from '../hooks/index';
+import likedSongsImg from '../img/liked-songs-300.png';
 
 const Sidebar = () => {
     const { pathname } = useLocation();
@@ -105,9 +106,9 @@ const Sidebar = () => {
                                 <div className='items-container'>
                                     <ul className='library-items'>
                                         <li className='library-item'>
-                                            <Link className={pathname === '' ? "active-link" : " "} to='/collection/tracks'>
+                                            <Link className={pathname === '' ? "active-link" : " "} to='/collection/tracks' state={{id: 'liked-songs', type: 'liked songs'}}>
                                                 <div className='library-item-img'>
-                                                    <img src=''/>
+                                                    <img src={likedSongsImg}/>
                                                 </div>
                                                 <div className='library-item-info'>
                                                     <div>
@@ -124,7 +125,7 @@ const Sidebar = () => {
                                         </li>
                                         {library.items?.map((item, i) =>
                                             <li key={i} className='library-item'>
-                                                <Link className={pathname === '' ? "active-link" : " "} to={`/playlist/${item.id}`} state={{id: item.id, type: 'Playlist'}}>
+                                                <Link className={pathname === '' ? "active-link" : " "} to={`/playlist/${item.id}`} state={{id: item.id, type: 'playlist'}}>
                                                     <div className='library-item-img'>
                                                         <img src={item.images[0].url}/>
                                                     </div>
