@@ -1,7 +1,7 @@
 import { useLocation } from 'react-router-dom';
 import Card from '../components/cards';
 
-function Section() {
+function Section({playingTrack, playingList}) {
     const location = useLocation();
     const { pathname } = useLocation();
     const { title, data } = location.state;
@@ -15,8 +15,11 @@ function Section() {
                         {data.albums?.items.map((item, i) =>
                             <Card
                             key={i}
+                            type={'album'}
                             item={item}
-                            image={item.images[0]}/>
+                            image={item.images[0]}
+                            playingTrack={playingList}
+                            uri={item.uri}/>
                         )}
                     </>
                 : pathname === '/section/recently-played'?
@@ -24,8 +27,11 @@ function Section() {
                         {data.items?.map((item, i) =>
                             <Card
                             key={i}
+                            type={'track'}
                             item={item.track}
-                            image={item.track.album.images[1]}/>
+                            image={item.track.album.images[1]}
+                            playingTrack={playingTrack}
+                            uri={item.track.album.uri}/>
                         )}
                     </>
                 : pathname === '/section/recommendations'?
@@ -33,8 +39,11 @@ function Section() {
                         {data.tracks?.map((item, i) =>
                             <Card
                             key={i}
+                            type={'track'}
                             item={item}
-                            image={item.album.images[1]}/>
+                            image={item.album.images[1]}
+                            playingTrack={playingTrack}
+                            uri={item.uri}/>
                         )}
                     </>
                 :
@@ -42,8 +51,11 @@ function Section() {
                         {data?.tracks?.items.map((item, i) =>
                             <Card
                             key={i}
+                            type={'track'}
                             item={item.track}
-                            image={item.track.album.images[1]}/>
+                            image={item.track.album.images[1]}
+                            playingTrack={playingTrack}
+                            uri={item.track.uri}/>
                         )}
                     </>
                 }

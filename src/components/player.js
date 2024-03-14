@@ -1,7 +1,7 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { StyledPlayer } from './styles/player.style';
-import { useState, useEffect } from 'react';
-import { getCurrentTack, skipToNext, skipToPrevious } from '../hooks/index';
+import { useState, useEffect, useRef } from 'react';
+import { getCurrentTrack, shuffleTrack, skipTrack, playPauseTrack, repeatTrack, setSeekPosition, setVolume } from '../hooks/index';
 import '../css/App.css';
 import { FaHeart, FaRegHeart  } from "react-icons/fa";
 import { IoShuffleOutline, IoRepeatOutline } from "react-icons/io5";
@@ -9,48 +9,133 @@ import { IoIosSkipBackward, IoIosPlay, IoIosPause, IoIosSkipForward } from "reac
 import { HiOutlineQueueList, HiOutlineSpeakerWave } from "react-icons/hi2";
 
 
-const Player = () => {
+const Player = ({fetchCurrentTrack, currentTrack}) => {
     const { pathname } = useLocation();
-    const [currentTrack, setCurrentTrack] = useState({});
+    const navigate = useNavigate();
+    // const [currentTrack, setCurrentTrack] = useState({});
+    const [isShuffle, setIsShuffle] = useState(false);
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [isRepeat, setIsRepeat] = useState(false);
+    const [progress, setProgress] = useState(0);
+    const [openQueue, setOpenQueue] = useState(false);
+    const [volumeValue, setVolumeValue] = useState(100);
 
     
-    const fetchData = async () => {
+    
+    const isShuffleTrack = async () => {
         try{
-            const response = await getCurrentTack();
-            const json = await response.json();
-            console.log(json)
-            setCurrentTrack(json);
+            await shuffleTrack(isShuffle);
         }
         catch (error) {
             console.log(error);
         }
     };
-    const skipNext = async () => {
+    const changeTrack = async (type) => {
+        setProgress(0);
         try{
-            const response = await skipToNext();
-            const json = await response.json();
-            console.log(json)
-            setCurrentTrack(json);
+            await skipTrack(type);
+            setTimeout(() => {
+                fetchCurrentTrack();
+            }, "600");
+            setIsPlaying(currentTrack?.is_playing);
         }
         catch (error) {
             console.log(error);
         }
     };
-    const skipBack = async () => {
+
+    const isPlayingTrack = async () => {
+        const type = isPlaying === true ? 'pause': 'play';
         try{
-            const response = await skipToPrevious();
-            // const json = await response.json();
-            console.log(response)
-            // setCurrentTrack(json);
+            await playPauseTrack(type, '');
         }
         catch (error) {
             console.log(error);
         }
+    };
+
+    const isRepeatTrack = async () => {
+        const type = isRepeat === true ? 'track': 'off';
+        try{
+            await repeatTrack(type);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    };
+
+    const seekPosition = async (value) => {
+        setProgress(parseInt(value))
+        try{
+            await setSeekPosition(value);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    };
+    const trackVolume = async (value) => {
+        try{
+            await setVolume(value);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    };
+
+
+    const handleShuffle = () => {
+        setIsShuffle(!isShuffle);
+        isShuffleTrack();
+    }
+
+    const handlePlayPause = () => {
+        setIsPlaying(!isPlaying);
+        isPlayingTrack();
+    }
+
+    const handleRepeat = () => {
+        setIsRepeat(!isRepeat);
+        isRepeatTrack();
+    }
+
+    const handleQueue = () => {
+        setOpenQueue(!openQueue);
+        
+        if(!openQueue === true) {
+            navigate('/queue');
+        } else {
+            navigate(-1);
+        }
+    }
+
+    useEffect(() => {
+        fetchCurrentTrack();
+        setProgress(currentTrack?.progress_ms);
+    }, []);
+
+    const intervalRef = useRef();
+
+    const startTimer = () => {
+        intervalRef.current = setInterval(() => {
+            if (progress >= currentTrack?.item?.duration_ms) {
+                setTimeout(() => {
+                    fetchCurrentTrack();
+                }, "600");
+                setProgress(currentTrack?.progress_ms);
+            } else {
+                setProgress(prev => prev + 1000);
+            }
+        }, [1000]);
     };
 
     useEffect(() => {
-        fetchData()
-    }, []);
+        if (isPlaying) {
+            startTimer();
+        } else {
+            clearInterval(intervalRef.current);
+        }
+    }, [isPlaying]);
+
 
     return (
         <StyledPlayer>
@@ -77,45 +162,58 @@ const Player = () => {
                 <div className='controls-col'>
                     <div className='controls'>
                         <div className='player-controls left'>
-                            <button className="controls-btn">
+                            <button className={isShuffle == true ? 'controls-btn active-btn' : 'controls-btn'} onClick={handleShuffle}>
                                 <IoShuffleOutline />
                             </button>
-                            <button className="controls-btn" onClick={skipBack}>
+                            <button className="controls-btn" onClick={() => changeTrack('previous')}>
                                 <IoIosSkipBackward />
                             </button>
                         </div>
-                        <button className="play-pause-btn">
-                            <IoIosPlay />
-                            {/* <IoIosPause/ /> */}
+                        <button className="play-pause-btn" onClick={handlePlayPause}>
+                            {isPlaying ? <IoIosPause /> : <IoIosPlay />}
                         </button>
                         <div className='player-controls right'>
-                            <button className="controls-btn" onClick={skipNext}>
+                            <button className="controls-btn" onClick={() => changeTrack('next')}>
                                 <IoIosSkipForward />
                             </button>
-                            <button className="controls-btn">
+                            <button className={isRepeat == true ? 'controls-btn active-btn' : 'controls-btn'} onClick={handleRepeat}>
                                 <IoRepeatOutline />
                             </button>
                         </div>
                     </div>
                     <div className='playback-slider'>
-                        <span>{`${Math.floor((currentTrack?.progress_ms / 1000 / 60) % 60)}:${Math.floor((currentTrack?.progress_ms / 1000) % 60).toString().padEnd(2,'0')}`}</span>
+                        <span>{`${Math.floor((progress / 1000 / 60) % 60)}:${Math.floor((progress / 1000) % 60) < 10 ? Math.floor((progress / 1000) % 60).toString().padStart(2,'0') : Math.floor((progress / 1000) % 60).toString().padEnd(2,'0')}`}</span>
                         <div className='slider-bar-container'>
-                            <input className='slider-bar' type='range'/>  
+                            <input 
+                            className='slider-bar' 
+                            type='range'
+                            min={0}
+                            value={progress}
+                            max={currentTrack?.item?.duration_ms}
+                            onChange={e => setProgress(parseInt(e.target.value))}
+                            onMouseUp={e => seekPosition(e.target.value)}/>  
                         </div>
-                        <span>{`${Math.floor((currentTrack?.item?.duration_ms / 1000 / 60) % 60)}:${Math.floor((currentTrack?.item?.duration_ms / 1000) % 60).toString().padEnd(2,'0')}`}</span>
+                        <span>{`${Math.floor((currentTrack?.item?.duration_ms / 1000 / 60) % 60)}:${Math.floor((currentTrack?.item?.duration_ms / 1000) % 60) < 10 ? Math.floor((currentTrack?.item?.duration_ms / 1000) % 60).toString().padStart(2,'0') : Math.floor((currentTrack?.item?.duration_ms / 1000) % 60).toString().padEnd(2,'0')}`}</span>
                     </div>
                 </div>
                 <div className='more-options-col'>
-                    <button className="controls-btn">
+                    <button className={!openQueue ? 'controls-btn active-btn' : 'controls-btn'} onClick={handleQueue}>
                         <HiOutlineQueueList />
                     </button>
                     <div className='volume'>
                         <button className="volume-btn">
                             <HiOutlineSpeakerWave />
-                            {/* <HiOutlineSpeakerXMark /> */}
                         </button>
                         <div className='volume-bar-container'>
-                            <input className='slider-bar' type='range'/>
+                            <input 
+                            className='slider-bar' 
+                            type='range'
+                            min={0}
+                            value={volumeValue}
+                            max={100}
+                            placeholder={100}
+                            onChange={e => setVolumeValue(e.target.value)}
+                            onMouseUp={e => trackVolume(e.target.value)}/>
                         </div>
                     </div>
                 </div>

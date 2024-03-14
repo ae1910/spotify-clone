@@ -70,6 +70,7 @@ export const StyledCard = styled(Link)`
             border-radius: 50%;
             color: #000000;
             font-size: 26px;
+            z-index: 100;
         }
     }
     

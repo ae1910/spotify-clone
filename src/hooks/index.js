@@ -17,7 +17,6 @@ const refreshAccessToken = async () => {
         const response = await fetch(`http://localhost:8080/refresh_token?refresh_token=${getLocalRefreshToken()}`);
         const { access_token } = response;
         setLocalAccessToken(access_token);
-        console.log(access_token);
         window.location.reload();
         return;
     } catch (error) {
@@ -42,6 +41,7 @@ export const getAccessToken = () => {
         console.error(error);
         refreshAccessToken();
     }
+
   
     // If token expired
     if (Date.now() - getTokenTimestamp() > EXPIRATION_TIME) {
@@ -52,8 +52,9 @@ export const getAccessToken = () => {
   
     const localAccessToken = getLocalAccessToken();
   
+    console.log(localAccessToken === 'undefined')
     // If there is no ACCESS token in local storage, set it and return `access_token` from params
-    if ((!localAccessToken || localAccessToken === 'undefined') && access_token) {
+    if ((!localAccessToken || localAccessToken === 'undefined') || access_token) {
         setLocalAccessToken(access_token);
         setLocalRefreshToken(refresh_token);
         return access_token;
@@ -82,91 +83,146 @@ const headers = {
 // Get a List of Current User's Playlists
 // --> https://developer.spotify.com/documentation/web-api/reference/get-current-users-profile
 export const getProfile = () => fetch('https://api.spotify.com/v1/me ', { 
-    methods:'GET', 
+    method:'GET', 
     headers
 });
 
 // Get a List of Current User's Playlists
 // --> https://developer.spotify.com/documentation/web-api/reference/get-a-list-of-current-users-playlists
 export const getLibrary = () => fetch('https://api.spotify.com/v1/me/playlists ', { 
-    methods:'GET', 
+    method:'GET', 
     headers
 });
 
 // Get a List of New Releases
 // --> https://developer.spotify.com/documentation/web-api/reference/get-new-releases
 export const getNewReleases = () => fetch('https://api.spotify.com/v1/browse/new-releases ', { 
-    methods:'GET', 
+    method:'GET', 
     headers
 });
 
 // Get a List of Recently Played Tracks
 // --> https://developer.spotify.com/documentation/web-api/reference/get-recently-played
 export const getRecentlyPlayed = () => fetch('https://api.spotify.com/v1/me/player/recently-played ', { 
-    methods:'GET', 
+    method:'GET', 
     headers
 });
 
 // Get a List of Recommended Tracks
 // --> https://developer.spotify.com/documentation/web-api/reference/get-recommendations
 export const getRecommendations = (topTracksIds) => fetch(`https://api.spotify.com/v1/recommendations?seed_tracks=${topTracksIds.join(',')}`, { 
-    methods:'GET', 
+    method:'GET', 
     headers
 });
 
 // Get a Playlist
 // --> https://developer.spotify.com/documentation/web-api/reference/get-playlist
 export const getPlaylist = (id, limit) => fetch(`https://api.spotify.com/v1/playlists/${id}?limit=${limit}`, { 
-    methods:'GET', 
+    method:'GET', 
     headers
 });
 
 // Get Categories
 // --> https://developer.spotify.com/documentation/web-api/reference/get-playlist
 export const getCategories = () => fetch(`https://api.spotify.com/v1/browse/categories/?limit=50`, { 
-    methods:'GET', 
+    method:'GET', 
     headers
 });
 
 // Get a Album
 // --> https://developer.spotify.com/documentation/web-api/reference/get-an-album
 export const getAlbum = (id) => fetch(`https://api.spotify.com/v1/albums/${id}`, { 
-    methods:'GET', 
+    method:'GET', 
     headers
 });
 
 // Get a List of Saved Tracks
 // --> https://developer.spotify.com/documentation/web-api/reference/get-users-saved-tracks
 export const getSavedTracks = () => fetch(`https://api.spotify.com/v1/me/tracks?limit=50`, { 
-    methods:'GET', 
+    method:'GET', 
     headers
 });
 
 // Get Search Results
 // --> https://developer.spotify.com/documentation/web-api/reference/search
 export const getSearchResult = (query, type, limit) => fetch(`https://api.spotify.com/v1/search?q=${query}&type=${type}&limit=${limit}`, { 
-    methods:'GET', 
+    method:'GET', 
     headers
 });
 
 // Get Currently Playing Track
 // --> https://developer.spotify.com/documentation/web-api/reference/get-users-saved-tracks
-export const getCurrentTack = () => fetch(`https://api.spotify.com/v1/me/player/currently-playing`, { 
-    methods:'GET', 
+export const getCurrentTrack = () => fetch(`https://api.spotify.com/v1/me/player/currently-playing`, { 
+    method:'GET', 
     headers
 });
 
-// Skip To Next Song
-// --> https://developer.spotify.com/documentation/web-api/reference/get-users-saved-tracks
-export const skipToNext = () => fetch(`https://api.spotify.com/v1/me/player/currently-playing`, { 
-    methods:'POST', 
+// Toggle Shuffle
+// --> https://developer.spotify.com/documentation/web-api/reference/skip-users-playback-to-next-track & https://developer.spotify.com/documentation/web-api/reference/skip-users-playback-to-previous-track
+export const shuffleTrack = (type) => fetch(`https://api.spotify.com/v1/me/player/shuffle?state=${type}`, { 
+    method:'PUT', 
     headers
 });
 
-// Skip To Previous Song
-// --> https://developer.spotify.com/documentation/web-api/reference/skip-users-playback-to-previous-track
-export const skipToPrevious = () => fetch(`https://api.spotify.com/v1/me/player/previous`, { 
-    methods:'POST', 
+// Skip To Next or Previous Track
+// --> https://developer.spotify.com/documentation/web-api/reference/skip-users-playback-to-next-track & https://developer.spotify.com/documentation/web-api/reference/skip-users-playback-to-previous-track
+export const skipTrack = (type) => fetch(`https://api.spotify.com/v1/me/player/${type}`, { 
+    method:'POST', 
+    headers
+});
+
+// Play or Pause Track
+// --> https://developer.spotify.com/documentation/web-api/reference/start-a-users-playback & https://developer.spotify.com/documentation/web-api/reference/pause-a-users-playback
+export const playPauseTrack = (type) => fetch(`https://api.spotify.com/v1/me/player/${type}`, { 
+    method:'PUT', 
+    headers
+});
+
+// Play  Track
+// --> https://developer.spotify.com/documentation/web-api/reference/start-a-users-playback
+export const playList = (uri) => fetch(`https://api.spotify.com/v1/me/player/play`, { 
+    method:'PUT', 
+    headers,
+    body: JSON.stringify({
+        'context_uri': uri
+    }) 
+});
+
+// Play  Track
+// --> https://developer.spotify.com/documentation/web-api/reference/start-a-users-playback
+export const playTrack = (uri) => fetch(`https://api.spotify.com/v1/me/player/play`, { 
+    method:'PUT', 
+    headers,
+    body: JSON.stringify({ 
+        'uris': uri
+    })
+});
+
+// Toggle Repeat
+// --> https://developer.spotify.com/documentation/web-api/reference/start-a-users-playback & https://developer.spotify.com/documentation/web-api/reference/pause-a-users-playback
+export const repeatTrack = (type) => fetch(`https://api.spotify.com/v1/me/player/repeat?state=${type}`, { 
+    method:'PUT', 
+    headers
+});
+
+// Seek To Position
+// --> https://developer.spotify.com/documentation/web-api/reference/start-a-users-playback & https://developer.spotify.com/documentation/web-api/reference/pause-a-users-playback
+export const setSeekPosition = (value) => fetch(`https://api.spotify.com/v1/me/player/seek?position_ms=${value}`, { 
+    method:'PUT', 
+    headers
+});
+
+// Seek To Position
+// --> https://developer.spotify.com/documentation/web-api/reference/set-volume-for-users-playback
+export const setVolume = (value) => fetch(`https://api.spotify.com/v1/me/player/volume?volume_percent=${value}`, { 
+    method:'PUT', 
+    headers
+});
+
+// Get Queue List
+// --> https://developer.spotify.com/documentation/web-api/reference/get-queue
+export const getQueue = () => fetch(`https://api.spotify.com/v1/me/player/queue`, { 
+    method:'GET', 
     headers
 });
 

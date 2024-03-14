@@ -8,7 +8,7 @@ import { getPlaylist, getAlbum, getSavedTracks } from "../hooks";
 import { useEffect, useState } from "react";
 import likedSongsImg from '../img/liked-songs-300.png';
 
-function Playlist() {
+function Playlist({playingTrack, playingList}) {
     const location = useLocation();
     const { id, type } = location.state;
 
@@ -16,14 +16,14 @@ function Playlist() {
 
     const fetchData = async () => {
         let getFunction;
+        if(type == 'playlist') {
+            getFunction = getPlaylist(id, 100);
+        } else if(type == 'album') {
+            getFunction = getAlbum(id);
+        } else {
+            getFunction = getSavedTracks();
+        }
         try{
-            if(type == 'playlist') {
-                getFunction = getPlaylist(id, 100);
-            } else if(type == 'album') {
-                getFunction = getAlbum(id);
-            } else {
-                getFunction = getSavedTracks();
-            }
             const response = await getFunction;
             const json = await response.json();
             setPlaylist(json);
@@ -34,6 +34,7 @@ function Playlist() {
     };
 
     useEffect(() => {
+        console.log(id, type)
         fetchData();
     }, [id]);
 
@@ -50,7 +51,6 @@ function Playlist() {
                     <div className="metadata">
                     <div className="user">
                         {type == 'album' ? 
-                        // <></>
                             <Link to={playlist.artists ? playlist?.artists[0]?.external_urls?.spotify : ''} target="_blank" rel="noopener noreferrer">{playlist.artists ? playlist?.artists[0]?.name : ''}</Link>
                             : type == 'liked songs' ? <Link to={playlist?.external_urls?.spotify} target="_blank" rel="noopener noreferrer">{playlist?.owner?.display_name}</Link>
                             : <Link to={playlist?.external_urls?.spotify} target="_blank" rel="noopener noreferrer">{playlist?.owner?.display_name}</Link>
@@ -63,7 +63,7 @@ function Playlist() {
             </div>
             <div className="playlist-container">
                 <div className="playlist-options">
-                    <button className="playlist-play-btn">
+                    <button className="playlist-play-btn" onClick={type == 'liked songs' ? '' : () => playingList(playlist?.uri)}>
                         <IoIosPlay />
                     </button>
                     <button className="playlist-save-btn">
@@ -90,7 +90,8 @@ function Playlist() {
                                 key={i}
                                 id={i + 1}
                                 type={type}
-                                item={item}/>
+                                item={item}
+                                playingTrack={playingTrack}/>
                             )}
                         </div>
                         : <div className="playlist-items">
@@ -99,7 +100,8 @@ function Playlist() {
                                 key={i}
                                 id={i + 1}
                                 type={type}
-                                item={item}/>
+                                item={item}
+                                playingTrack={playingTrack}/>
                             )}
                         </div>
                     }

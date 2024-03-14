@@ -10,7 +10,7 @@ const Card = (props) => {
             <div className={props.type == 'artist'? "section-img artists" :  "section-img"}>
                 <img src={props.image?.url} />
                 <div>
-                    <button className="play-btn">
+                    <button className="play-btn" onClick={(e) => {e.preventDefault(); props.playingTrack(props.uri);}}>
                         <IoIosPlay />
                     </button>
                 </div>

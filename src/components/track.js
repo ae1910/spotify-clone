@@ -1,21 +1,19 @@
 import { Link } from "react-router-dom";
-import { IoIosPlay, IoIosPause } from "react-icons/io";
+import { IoIosPlay } from "react-icons/io";
 import { FaHeart, FaRegHeart  } from "react-icons/fa";
 import { StyledTrackItem } from "./styles/track.style";
 import { BsExplicitFill } from "react-icons/bs";
 import { PiDotsThreeBold } from "react-icons/pi";
 
 function Track(props) {
+    // console.log(props?.item.uri)
     return (
         <StyledTrackItem key={props?.key} className="playlist-item layout-grid">
             <div className="col-1">
                 <span>{props?.id}</span>
-                <button>
+                <button onClick={props?.type == 'album' ? () => props?.playingTrack(props?.item.uri) : () => props?.playingTrack(props?.item.track.uri)}>
                     <IoIosPlay />
                 </button>
-                {/* <button>
-                    <IoIosPause />
-                </button> */}
             </div>
             {props?.type == 'album' ? 
                 <div className="col-2">

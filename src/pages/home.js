@@ -2,9 +2,10 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { getHomepage, getRecommendations } from '../hooks/index';
 import Card from '../components/cards';
+import { IoIosPlay } from "react-icons/io";
 
 
-const Home = () => {
+const Home = ({playingTrack, playingList}) => {
     const [newReleases, setNewReleases] = useState({});
     const [recentlyPlayed, setRecentlyPlayed] = useState({});
     const [recommended, setRecommended] = useState({});
@@ -49,13 +50,16 @@ const Home = () => {
             <div className="opening">
                 <h2>Good Afternoon</h2>
                 <div className="recent-playlists">
-                    {recentlyPlayed.items?.slice(0, 6).map((item, i) =>
-                        <Link key={i} className="recent-playlist">
+                    {recentlyPlayed?.items?.slice(0, 6).map((item, i) =>
+                        <Link key={i} className="recent-playlist" to={`/album/${item?.track.album.id}`} state={{id: item?.track.album.id, type: 'album'}}>
                             <div className="recent-playlist-img">
                                 <img src={item.track.album.images[1].url}/>
                             </div>
                             <div className="recent-playlist-title">
                                 <p>{item.track.album.name}</p>
+                                <button className="play-btn" onClick={(e) => {e.preventDefault(); playingList(item.track.album.uri);}}>
+                                    <IoIosPlay />
+                                </button>
                             </div>
                         </Link>
                     )}
@@ -70,10 +74,12 @@ const Home = () => {
                     {newReleases.albums?.items.map((item, i) =>
                         <Card
                         key={i}
-                        type='album'
+                        type={'album'}
                         item={item}
                         image={item.images[0]}
-                        url={`/album/${item.id}`}/>
+                        url={`/album/${item.id}`}
+                        playingTrack={playingList}
+                        uri={item.uri}/>
                     )}
                 </div>
             </div>
@@ -89,7 +95,9 @@ const Home = () => {
                         type={'track'}
                         item={item.track}
                         image={item.track.album.images[1]}
-                        url={item.track.external_urls.spotify}/>
+                        url={item.track.external_urls.spotify}
+                        playingTrack={playingTrack}
+                        uri={item.track.album.uri}/>
                     )}
                 </div>
             </div>
@@ -105,7 +113,9 @@ const Home = () => {
                         type={'track'}
                         item={item}
                         image={item.album.images[1]}
-                        url={item.album.external_urls.spotify}/>
+                        url={item.album.external_urls.spotify}
+                        playingTrack={playingTrack}
+                        uri={item.uri}/>
                     )}
                 </div>
             </div>
@@ -121,7 +131,9 @@ const Home = () => {
                         type={'track'}
                         item={item.track}
                         image={item.track.album.images[1]}
-                        url={item.track.album.external_urls.spotify}/>
+                        url={item.track.album.external_urls.spotify}
+                        playingTrack={playingTrack}
+                        uri={item.track.uri}/>
                     )}
                 </div>
             </div>

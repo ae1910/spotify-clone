@@ -118,6 +118,10 @@ main {
 
   &:hover {
     background-color: var(--background-tinted-highlight);
+
+    .play-btn {
+      visibility: visible;
+    }
   }
 }
 .recent-playlist-img {
@@ -125,6 +129,11 @@ main {
   height: 48px;
 }
 .recent-playlist-title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
   padding-left: 8px;
   
   p {
@@ -137,6 +146,24 @@ main {
     font-size: var(--text-size-smaller);
     font-weight: 700;
     margin: 0;
+  }
+  .play-btn {
+    visibility: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    background-color: var(--text-accent);
+    box-shadow: 0 8px 8px rgba(0,0,0,.3);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    color: #000000;
+    font-size: 2rem;
+    z-index: 100;
+    flex: 0 0 32px;
+    margin: 0 var(--spacing-main);
+    cursor: pointer;
   }
 }
 

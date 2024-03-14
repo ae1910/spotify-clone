@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getCategories, getSearchResults } from "../hooks";
 import { StyledCategoryContainer, StyledCategory } from "../components/styles/categories.style";
-import { Link, useLocation, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import Card from "../components/cards";
 import { StyledTrackItem } from "../components/styles/track.style";
 import { BsExplicitFill } from "react-icons/bs";
@@ -10,9 +10,7 @@ import { PiDotsThreeBold } from "react-icons/pi";
 import { IoIosPlay } from "react-icons/io";
 
 
-function Search() {
-    const { pathname } = useLocation();
-
+function Search({playingTrack, playingList}) {
     const [categories, setCategories] = useState();
     const [tracksResults, setTracksResults] = useState({});
     const [artistsResults, setArtistsResults] = useState({});
@@ -86,7 +84,7 @@ function Search() {
                                     <div className="col-2">
                                         <div className="track-image">
                                             <img src={item?.album?.images[1]?.url}/>
-                                            <button>
+                                            <button onClick={() => playingTrack(item.album.uri)}>
                                                 <IoIosPlay />
                                             </button>
                                         </div>
@@ -125,7 +123,9 @@ function Search() {
                                 type={'artist'}
                                 item={item}
                                 image={item.images[1]}
-                                url={item.external_urls.spotify}/>
+                                url={item.external_urls.spotify}
+                                playingTrack={playingList}
+                                uri={item.uri}/>
                             )}
                         </div>
                     </div>
@@ -138,7 +138,9 @@ function Search() {
                                 type={'album'}
                                 item={item}
                                 image={item.images[1]}
-                                url={item.external_urls.spotify}/>
+                                url={`../album/${item.id}`}
+                                playingTrack={playingList}
+                                uri={item.uri}/>
                             )}
                         </div>
                     </div>
@@ -151,7 +153,9 @@ function Search() {
                                 type={'playlist'}
                                 item={item}
                                 image={item.images[0]}
-                                url={item.external_urls.spotify}/>
+                                url={`../playlist/${item.id}`}
+                                playingTrack={playingList}
+                                uri={item.uri}/>
                             )}
                         </div>
                     </div>

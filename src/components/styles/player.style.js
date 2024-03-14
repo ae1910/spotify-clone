@@ -83,19 +83,15 @@ export const StyledPlayer = styled.div`
     }
     .track-info {
         display: grid;
-        grid-template: "title title" "badge artists"/auto 1fr;
+        grid-template: "title" "artists"/auto 1fr;
         align-items: center;
         gap: var(--spacing-thinner);
         padding-right: var(--spacing-main);
-
-        svg {
-            grid-area: badge;
-        }
     }
     .track-title {
         grid-area: title;
         color: var(--text-main);
-        font-size: 1rem;
+        font-size: 0.875em;
         font-weight: 400;
     }
     .track-artists {
@@ -123,6 +119,10 @@ export const StyledPlayer = styled.div`
             width: 100%;
             gap: var(--spacing-wider-2);
             margin-bottom: var(--spacing-main);
+
+            div .active-btn {
+                color: var(--text-accent);
+            }
         }
     }
     .player-controls {
@@ -165,7 +165,13 @@ export const StyledPlayer = styled.div`
         .slider-bar {
             width: 100%;
             height: 4px;
+            background-color: rgba(255, 255, 255, 0.3);
             border-radius: 2px;
+            accent-color: #fff;
+            
+            &:hover {
+                accent-color: var(--text-accent);
+            }
         }
     }
     .more-options-col {
