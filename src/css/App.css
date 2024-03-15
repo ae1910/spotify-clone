@@ -57,7 +57,7 @@ img {
   display: grid;
   gap: var(--spacing-main);
   padding:  8px 8px 0;
-  grid-template-areas: "left-sidebar main right-sidebar" "player player player";
+  grid-template-areas: "left-sidebar main" "player player";
   grid-template-columns: auto 1fr;
   grid-template-rows: 1fr auto;
   width: 100%;
@@ -78,7 +78,7 @@ main {
   min-height: 100%;
   overscroll-behavior-y: contain;
   overflow-y: scroll;
-  background: linear-gradient(#117a37, #000000, #000000);
+  background: linear-gradient(#117a37 0%, #000000 35%);
 }
 
 /* Homepage */

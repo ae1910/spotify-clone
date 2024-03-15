@@ -34,7 +34,6 @@ function Playlist({playingTrack, playingList}) {
     };
 
     useEffect(() => {
-        console.log(id, type)
         fetchData();
     }, [id]);
 

@@ -72,7 +72,6 @@ export const logout = () => {
     window.location.reload();
 };
 
-
 //API CALLS
 const headers = {
     Authorization: `Bearer ${token}`,
@@ -155,6 +154,23 @@ export const getSearchResult = (query, type, limit) => fetch(`https://api.spotif
 export const getCurrentTrack = () => fetch(`https://api.spotify.com/v1/me/player/currently-playing`, { 
     method:'GET', 
     headers
+});
+
+// Get Playback State
+// --> https://developer.spotify.com/documentation/web-api/reference/get-information-about-the-users-current-playback
+export const getPlaybackState = () => fetch(`https://api.spotify.com/v1/me/player`, { 
+    method:'GET', 
+    headers
+});
+
+// Transfers playback to a new device
+// --> https://developer.spotify.com/documentation/web-api/reference/skip-users-playback-to-next-track & https://developer.spotify.com/documentation/web-api/reference/skip-users-playback-to-previous-track
+export const transferPlayback = (id) => fetch(`https://api.spotify.com/v1/me/player`, { 
+    method:'PUT', 
+    headers,
+    body: JSON.stringify({
+        'device_ids': [id]
+    })
 });
 
 // Toggle Shuffle
