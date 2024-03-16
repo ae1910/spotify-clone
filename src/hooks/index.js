@@ -14,7 +14,7 @@ const getLocalRefreshToken = () => localStorage.getItem('refreshToken');
 
 const refreshAccessToken = async () => {
     try {
-        const response = await fetch(`http://localhost:8080/refresh_token?refresh_token=${getLocalRefreshToken()}`);
+        const response = await fetch(`https://spotifiy-limited-api.onrender.com/refresh_token?refresh_token=${getLocalRefreshToken()}`);
         const { access_token } = response;
         setLocalAccessToken(access_token);
         window.location.reload();
