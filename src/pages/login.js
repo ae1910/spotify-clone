@@ -9,7 +9,7 @@ const Login = () => {
     const LOGIN_URI =
     process.env.NODE_ENV !== 'production'
         ? 'http://localhost:8080/login'
-        : '';
+        : 'https://spotify-limited-api.onrender.com/login';
 
     return (
         <StyledLogin id="login">
