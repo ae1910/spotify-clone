@@ -28,6 +28,13 @@ export const StyledQueue = styled.div`
         }
     }
 
+    .playlist-item:hover .col-1 span {
+        visibility: visible;
+    }
+    h2+.playlist-item:first-of-type .track-title {
+        color: var(--text-accent);
+    }
+
     @container (min-width: 536px) {
         .col-3 {
             display: flex;

@@ -88,7 +88,7 @@ export const getProfile = () => fetch('https://api.spotify.com/v1/me ', {
 
 // Get a List of Current User's Playlists
 // --> https://developer.spotify.com/documentation/web-api/reference/get-a-list-of-current-users-playlists
-export const getLibrary = () => fetch('https://api.spotify.com/v1/me/playlists ', { 
+export const getLibrary = () => fetch('https://api.spotify.com/v1/me/playlists?limit=50 ', { 
     method:'GET', 
     headers
 });

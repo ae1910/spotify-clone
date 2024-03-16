@@ -5,35 +5,18 @@ import { BiSearch } from 'react-icons/bi';
 import { IoCloseOutline } from "react-icons/io5";
 import { PiArrowCircleDownLight } from "react-icons/pi";
 import { useState, useEffect } from 'react';
-import { getProfile, logout } from '../hooks/index';
 import '../css/App.css';
+import { logout } from '../hooks';
 
-const Header = () => {
+const Header = ({user}) => {
     const { pathname } = useLocation();
     const navigate = useNavigate();
 
     const [profile, setProfile] = useState({});
-    const [disabled, setDisabled] = useState(false);
+    const [toggle, setToggle] = useState(false);
 
     const [query, setQuery] = useState('');
     const [searchParams, setSearchParams] = useSearchParams();
-    // const [results, setResults] = useState({});
-
-    const fetchData = async () => {
-        try{
-            const response = await getProfile();
-            const json = await response.json();
-            setProfile(json);
-        }
-        catch (error) {
-            console.log(error);
-        }
-    };
-    
-    useEffect(() => {
-        fetchData();
-        // console.log(pathname);
-    }, []);
 
     const handleChange = (e) => {
         setSearchParams(prev => {
@@ -43,14 +26,14 @@ const Header = () => {
         setQuery(e.target.value);
     }
 
-    // useEffect(() => {
-    //     if
-    // }, [navigate]);
+    useEffect(() => {
+        setProfile(user);
+    }, []);
 
     return (
         <StyledHeader>
             <div className="navigation-btns">
-                <button className="nav-btn left" onClick={() => navigate(-1)} disabled={disabled}>
+                <button className="nav-btn left" onClick={() => navigate(-1)}>
                     <RxCaretLeft />
                 </button>
                 <button className="nav-btn right" onClick={() => navigate(1)}>
@@ -79,8 +62,8 @@ const Header = () => {
                         Install Spotify
                     </button>
                 </Link>
-                <Link to={profile?.external_urls?.spotify} target="_blank" rel="noopener noreferrer" title={profile?.display_name}>
-                    <button className="profile-btn">
+                <div className='user-container'>
+                    <button className="profile-btn" onClick={() => setToggle(!toggle)}>
                         <div className="profile-img-container">
                             {profile?.images ?
                                 <img src={profile?.images[0]?.url} />
@@ -88,7 +71,15 @@ const Header = () => {
                             }
                         </div>
                     </button>
-                </Link>
+                    <div className={toggle ? 'dropdown show' : 'dropdown'}>
+                        <ul>
+                            <li>
+                                <Link to={profile?.external_urls?.spotify} target="_blank" rel="noopener noreferrer" title={profile?.display_name}>Profile</Link>
+                            </li>
+                            <li onClick={() => logout()}>Logout</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </StyledHeader>
     );

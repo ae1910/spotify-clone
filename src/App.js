@@ -1,5 +1,4 @@
 import './css/App.css';
-import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import { useState, useEffect } from 'react';
 import { token } from './hooks/index'
 import Account from './pages/account';
@@ -9,8 +8,8 @@ function App() {
   const [accessToken, setAccessToken] = useState('')
   
   useEffect(() => {
-    window.localStorage.removeItem('accessToken');
-    window.localStorage.removeItem('refreshToken');
+    // window.localStorage.removeItem('accessToken');
+    // window.localStorage.removeItem('refreshToken');
     setAccessToken(token)
   }, []);
   

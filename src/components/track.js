@@ -85,8 +85,8 @@ function Track(props) {
             }
             <div className="col-5">
                 {props?.type == 'album' || props?.type == 'queue'? 
-                    <span>{`${Math.floor((props?.item?.duration_ms / 1000 / 60) % 60)}:${Math.floor((props?.item?.duration_ms / 1000) % 60) < 10 ? Math.floor((props?.item?.duration_ms / 1000) % 60).toString().padStart(2,'0') : Math.floor((props?.item?.duration_ms / 1000) % 60).toString().padEnd(2,'0')}`}</span>
-                    : <span>{`${Math.floor((props?.item?.track.duration_ms / 1000 / 60) % 60)}:${Math.floor((props?.item?.track.duration_ms / 1000) % 60) < 10 ? Math.floor((props?.item?.track.duration_ms / 1000) % 60).toString().padStart(2,'0') : Math.floor((props?.item?.track.duration_ms / 1000) % 60).toString().padEnd(2,'0')}`}</span>
+                    <span>{`${Math.floor((props?.item?.duration_ms % 360000) / 60000)}:${Math.floor((props?.item?.duration_ms % 60000) / 1000).toString().padStart(2,'0')}`}</span>
+                    : <span>{`${Math.floor((props?.item?.track.duration_ms % 360000) / 60000)}:${Math.floor((props?.item?.track.duration_ms / 1000) % 60) < 10 ? Math.floor((props?.item?.track.duration_ms / 1000) % 60).toString().padStart(2,'0') : Math.floor((props?.item?.track.duration_ms / 1000) % 60).toString().padEnd(2,'0')}`}</span>
                 }
                 <button className="more-track-btn">
                     <PiDotsThreeBold />

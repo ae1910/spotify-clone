@@ -8,7 +8,7 @@ import { getPlaylist, getAlbum, getSavedTracks } from "../hooks";
 import { useEffect, useState } from "react";
 import likedSongsImg from '../img/liked-songs-300.png';
 
-function Playlist({playingTrack, playingList}) {
+function Playlist({profile, playingTrack, playingList}) {
     const location = useLocation();
     const { id, type } = location.state;
 
@@ -51,7 +51,7 @@ function Playlist({playingTrack, playingList}) {
                     <div className="user">
                         {type == 'album' ? 
                             <Link to={playlist.artists ? playlist?.artists[0]?.external_urls?.spotify : ''} target="_blank" rel="noopener noreferrer">{playlist.artists ? playlist?.artists[0]?.name : ''}</Link>
-                            : type == 'liked songs' ? <Link to={playlist?.external_urls?.spotify} target="_blank" rel="noopener noreferrer">{playlist?.owner?.display_name}</Link>
+                            : type == 'liked songs' ? <Link to={playlist?.external_urls?.spotify} target="_blank" rel="noopener noreferrer">{profile}</Link>
                             : <Link to={playlist?.external_urls?.spotify} target="_blank" rel="noopener noreferrer">{playlist?.owner?.display_name}</Link>
                         }
                     </div>
@@ -65,12 +65,12 @@ function Playlist({playingTrack, playingList}) {
                     <button className="playlist-play-btn" onClick={type == 'liked songs' ? '' : () => playingList(playlist?.uri)}>
                         <IoIosPlay />
                     </button>
-                    <button className="playlist-save-btn">
+                    {/* <button className="playlist-save-btn">
                         <FaRegHeart  />
                     </button>
                     <button className="playlist-more-btn">
                         <PiDotsThreeBold />
-                    </button>
+                    </button> */}
                 </div>
                 <div className="playlist-layout">
                     <div className="playlist-header layout-grid">

@@ -120,7 +120,7 @@ export const StyledPlayer = styled.div`
             gap: var(--spacing-wider-2);
             margin-bottom: var(--spacing-main);
 
-            div .active-btn {
+            .active-btn {
                 color: var(--text-accent);
             }
         }
@@ -185,6 +185,9 @@ export const StyledPlayer = styled.div`
         button {
             padding: var(--spacing-thinner);
         }
+        .active-btn {
+                color: var(--text-accent) !important;
+            }
     }
     .volume {
         display: flex;

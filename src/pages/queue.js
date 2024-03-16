@@ -3,7 +3,7 @@ import Track from '../components/track'
 import { getQueue } from '../hooks';
 import { StyledQueue } from '../components/styles/queue.styles';
 
-function Queue({playingTrack, setTracks, setCurrentIndex}) {
+function Queue( ) {
   const [queue, setQueue] = useState({});
 
   const fetchQueue = async () => {
@@ -11,7 +11,6 @@ function Queue({playingTrack, setTracks, setCurrentIndex}) {
       const response = await getQueue();
       const json = await response.json();
       setQueue(json);
-      setTracks(json);
     }
     catch (error) {
       console.log(error);
@@ -31,10 +30,7 @@ function Queue({playingTrack, setTracks, setCurrentIndex}) {
             key={0}
             id={1}
             type={'queue'}
-            item={queue?.currently_playing}
-            playingTrack={playingTrack}
-            fetchQueue={fetchQueue}
-            onClick={() => setCurrentIndex(1)}/>
+            item={queue?.currently_playing}/>
         <h2>Next Up</h2>
         <div className='queue-list'>
           {queue?.queue?.map((item, i) =>
@@ -42,10 +38,7 @@ function Queue({playingTrack, setTracks, setCurrentIndex}) {
               key={i}
               id={i + 2}
               type={'queue'}
-              item={item}
-              playingTrack={playingTrack}
-              fetchQueue={fetchQueue}
-              onClick={() => setCurrentIndex(i + 2)}/>
+              item={item}/>
           )}
         </div>
           

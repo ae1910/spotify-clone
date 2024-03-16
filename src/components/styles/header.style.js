@@ -126,6 +126,51 @@ export const StyledHeader = styled.header`
             }
         }
     }
+    .user-container {
+        position: relative;
+
+        .dropdown {
+            display: none;
+            z-index: 9999;
+            position: absolute;
+            inset: 0 0 auto auto;
+            transform: translate(0, 40px);
+            min-width: 150px;
+            background-color: #282828;
+
+            ul {
+                padding: var(--spacing-thinner);
+                list-style: none;
+                margin: 0;
+
+                li {
+                    display: flex;
+                    align-items: center;
+                    border-radius: 2px;
+                    width: 100%;
+                    height: 40px;
+                    padding: var(--spacing-wider);
+                    cursor: pointer;
+                    user-select: none;
+                    font-weight: 400;
+                    font-size: var(--text-size-smaller);
+
+                    a {
+                        color: var(--text-main);
+                        width: 100%;
+                        height: 100%;
+                    }
+                    &:hover {
+                        background-color: var(--background-tinted-main);
+                    }
+                }
+            }
+
+            &.show {
+                display: block;
+            }
+        }
+    }
 
     @media (max-width: 1024px) {
         .nav-btn.right {
